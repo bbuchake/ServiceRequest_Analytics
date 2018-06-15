@@ -12,8 +12,8 @@ var records_per_page = $records_per_page.value;
 $searchBtn.addEventListener("click", handleSearchButtonClick);
 $records_per_page.addEventListener("change", updateRecordsPerPage);
 
-// Set ufoSightings to dataSet initially
-var ufoSightings = dataSet;
+// Set serviceRequests to dataSet initially
+var serviceRequests = dataSet;
 
 //Initialize Page 1
 var current_page = 1;
@@ -31,7 +31,7 @@ function updateRecordsPerPage() {
 }
 
 
-// renderTable renders the ufoSightings to the tbody
+// renderTable renders the serviceRequests to the tbody
 function renderTable(page) {
     $tbody.innerHTML = "";
 
@@ -65,18 +65,18 @@ function renderTable(page) {
     if (current_page > numPages()) current_page = numPages();
 
     for (var i = (current_page-1) * records_per_page; i < (current_page * records_per_page) && i < dataSet.length; i++) {
-        // Get get the current ufo object and its fields    
-        var ufo = ufoSightings[i];
-        var fields = Object.keys(ufo);
+        // Get get the current request object and its fields    
+        var request = serviceRequests[i];
+        var fields = Object.keys(request);
         var rowIndex = 0;
         // Create a new row in the tbody, set the index to be 0
         
         var $row = $tbody.insertRow(rowIndex);
         for (var j = 0; j < fields.length; j++) {
-            // For every field in the ufo object, create a new cell at set its inner text to be the current value at the current ufo's field      
+            // For every field in the request object, create a new cell at set its inner text to be the current value at the current request's field      
             var field = fields[j];
             var $cell = $row.insertCell(j);
-            $cell.innerText = ufo[field];
+            $cell.innerText = request[field];
         }
         rowIndex++;   
 
@@ -103,13 +103,14 @@ function handleSearchButtonClick() {
     console.log('Filter Search: ' + filterSearch);
     console.log('Search Type: ' + searchType);
     
-    // Set ufoSightings to an array of all ufos whose "state" matches the filter  
-    ufoSightings = dataSet.filter(function (ufo) {
-        var ufoDateTime = ufo.datetime.toLowerCase();
-        var ufoCountry = ufo.country.toLowerCase();
-        var ufoState = ufo.state.toLowerCase();
-        var ufoCity = ufo.city.toLowerCase();
-        var ufoShape = ufo.shape.toLowerCase();
+    // Set serviceRequests to an array of all resquests whose "state" matches the filter  
+    serviceRequests = dataSet.filter(function (request) {
+        var reqNumber = request.number.toLowerCase();
+        var reqCatItem = request.cat_item.toLowerCase();
+        var reqState = request.state.toLowerCase();
+        var reqAsgnGroup = request.assignment_group.toLowerCase();
+        var reqFor = request.request.requested_for.toLowerCase();
+        var reqDueDate  = request.due_date.toLowerCase();
         
         var returnSearch = "";
 
@@ -117,22 +118,25 @@ function handleSearchButtonClick() {
         switch(searchType)
         {
             case '1':
-                returnSearch = ufoDateTime;
+                returnSearch = reqNumber;
                 break;
             case '2':
-                returnSearch = ufoCountry;
+                returnSearch = reqCatItem;
                 break;
             case '3':
-                returnSearch = ufoState;
+                returnSearch = reqState;
                 break;
             case '4':
-                returnSearch = ufoCity;
+                returnSearch = reqAsgnGroup;
                 break;
             case '5':
-                returnSearch =  ufoShape;
+                returnSearch =  reqFor;
                 break;
+            case '6':
+            	returnSearch  = reqDueDate;
+            	break;
             default:
-                returnSearch = ufoDateTime;
+                returnSearch = reqNumber;
                 break;
         }
 
@@ -145,7 +149,7 @@ function handleSearchButtonClick() {
 }
 
 function numPages() {
-    return Math.ceil(ufoSightings.length / records_per_page);
+    return Math.ceil(serviceRequests.length / records_per_page);
 }
 
 
