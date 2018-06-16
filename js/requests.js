@@ -14,6 +14,7 @@ $records_per_page.addEventListener("change", updateRecordsPerPage);
 
 // Set serviceRequests to dataSet initially
 var serviceRequests = dataSet;
+console.log(serviceRequests);
 
 //Initialize Page 1
 var current_page = 1;
@@ -67,6 +68,7 @@ function renderTable(page) {
     for (var i = (current_page-1) * records_per_page; i < (current_page * records_per_page) && i < dataSet.length; i++) {
         // Get get the current request object and its fields    
         var request = serviceRequests[i];
+        console.log(request);
         var fields = Object.keys(request);
         var rowIndex = 0;
         // Create a new row in the tbody, set the index to be 0
@@ -105,36 +107,60 @@ function handleSearchButtonClick() {
     
     // Set serviceRequests to an array of all resquests whose "state" matches the filter  
     serviceRequests = dataSet.filter(function (request) {
-        var reqNumber = request.number.toLowerCase();
-        var reqCatItem = request.cat_item.toLowerCase();
-        var reqState = request.state.toLowerCase();
-        var reqAsgnGroup = request.assignment_group.toLowerCase();
-        var reqFor = request.request.requested_for.toLowerCase();
-        var reqDueDate  = request.due_date.toLowerCase();
-        
+           
         var returnSearch = "";
 
         //Check Search Type and then filter
         switch(searchType)
         {
             case '1':
-                returnSearch = reqNumber;
-                break;
+            	if(request.number) {
+            		var reqNumber = request.number.toLowerCase();
+                	returnSearch = reqNumber;
+                	}
+                else 
+                	returnSearch = reqNumber;
+                	 break;
             case '2':
-                returnSearch = reqCatItem;
-                break;
+            	if(request.cat_item) {
+            	    var reqCatItem = request.cat_item.toLowerCase();
+                    returnSearch = reqCatItem;
+                }
+                else 
+                	returnSearch = reqNumber;
+                 break;
             case '3':
-                returnSearch = reqState;
-                break;
+            	if(request.state) {
+            	    var reqState = request.state.toLowerCase();
+                	returnSearch = reqState;
+                }
+                else 
+                	returnSearch = reqNumber;
+                 break;
             case '4':
-                returnSearch = reqAsgnGroup;
-                break;
+            	if(request.assignment_group) {
+            		var reqAsgnGroup = request.assignment_group.toLowerCase();
+                	returnSearch = reqAsgnGroup;
+                }
+                else 
+                	returnSearch = reqNumber;
+                 break;
             case '5':
-                returnSearch =  reqFor;
-                break;
+            	if(request.request_requested_for) {
+            	    var reqFor = request.request_requested_for.toLowerCase();
+                	returnSearch =  reqFor;
+                }
+                else 
+                	returnSearch = reqNumber;
+                 break;
             case '6':
-            	returnSearch  = reqDueDate;
-            	break;
+                if(request.due_date) {
+                	var reqDueDate  = request.due_date.toLowerCase();
+            		returnSearch  = reqDueDate;
+            	}
+            	else 
+                	returnSearch = reqNumber;
+            	 break;
             default:
                 returnSearch = reqNumber;
                 break;
