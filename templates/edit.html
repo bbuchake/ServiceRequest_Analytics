@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://bootswatch.com/_assets/css/custom.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../static/css/styles.css">
 </head>
 
 <body>
@@ -28,20 +28,6 @@
                     <li>
                         <a href="index.html">Home</a>
                     </li>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="plots">Menu Option <span class="caret"></span></a>
-                        <ul class="dropdown-menu" aria-labelledby="plots">
-                            <li><a href="#">Menu Option</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">Sub-menu Option</a></li>
-                            <li><a href="#">Sub-menu Option</a></li>
-                            <li><a href="#">Sub-menu Option</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">Menu Option</a></li>
-                            <li><a href="#">Menu Option</a></li>
-
-                        </ul>
-                    </li>
                     <li>
                         <a href="requests.html">Service Requests</a>
                     </li>
@@ -52,216 +38,219 @@
     </div>
 
     <div class="container">
+        <div id="banner">
+            <h3>View/Edit Service Request</h3>
+            <p class="lead">View details of a Service Request. You may edit priority and click Submit.</p>
+        </div>
+        <div class="alert alert-dismissible alert-danger" id="alertDiv">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong><p id="alerts"></p></strong> 
+        </div>
+        <div class="row">      
+            <div class="col-md-12">
+                <form class="bs-component">        
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <fieldset>
+                                    <legend>Details</legend>
+                                    <div class="form-group row">
+                                        <label for="itemNumber" class="col-sm-2 col-form-label">Item Number</label>
+                                        <div class="col-sm-10">
+                                        <p id="itemNumber"></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="state" class="col-sm-2 col-form-label">State</label>
+                                        <div class="col-sm-10">
+                                        <p id="state"></p> 
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="assignmentGroup" class="col-sm-2 col-form-label">Assignment Group</label>
+                                        <div class="col-sm-10">
+                                        <p id="assignmentGroup"></p>   
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="col-lg-6">
+                                <fieldset>
+                                    <legend>&nbsp;</legend>
+                                    <div class="form-group row">
+                                        <label for="categoryItem" class="col-sm-2 col-form-label">Category Item</label>
+                                        <div class="col-sm-10">
+                                        <p id="categoryItem"></p>  
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="requestedFor" class="col-sm-2 col-form-label">Requested For</label>
+                                        <div class="col-sm-10">
+                                        <p id="requestedFor"></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="dueDate" class="col-sm-2 col-form-label">Due Date</label>
+                                        <div class="col-sm-10">
+                                        <p id="dueDate"></p>   
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div> 
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <fieldset class="form-group">
+                                    <legend>Requestor</legend>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="requestorRadios" id="requestorRadio1" value="7">
+                                        President, CEO, EVP, Dean, Department Chair
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="requestorRadios" id="requestorRadio2" value="5">
+                                        VP, Executive Director, Director or Manager (DoQ), Analyst (DoQ), Quality Champion, Medical Director
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="requestorRadios" id="requestorRadio3" value="3">
+                                        Director (non-DoQ), Division or Service Chief, Administrative Director or equivalent
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="radio" class="form-check-input" name="requestorRadios" id="requestorRadio4" value="2">
+                                            Manager (non-DoQ), Attending MD, PharmD
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="radio" class="form-check-input" name="requestorRadios" id="requestorRadio5" value="1">
+                                            Analyst (non-DoQ), Supervised trainee projects
+                                        </label>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <fieldset class="form-group">
+                                    <legend>Purpose</legend>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="purposeRadios" id="purposeRadio1" value="7">
+                                        Joint Commission or other CMS Purposes, Corporate or Contractual Compliance, California Department of Public Health, Internal / External Audits, Other Regulatory/Compliance Purposes
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="purposeRadios" id="purposeRadio2" value="5">
+                                        Improving Clinical Outcomes, Achieving Zero Harm                              
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="purposeRadios" id="purposeRadio3" value="3">
+                                        Inpatient CDB/RM, Non-inpatient CDB/RM, Core Measures
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="radio" class="form-check-input" name="purposeRadios" id="purposeRadio4" value="2">
+                                            Other Quality Improvement Priorities
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="radio" class="form-check-input" name="purposeRadios" id="purposeRadio5" value="1">
+                                            True North non-Quality and Safety Pillars: Our People, Patient Experience, Financial Strength, Strategic Growth, Learning Health System
+                                        </label>
+                                    </div>
+                                </fieldset>
+                    
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <fieldset class="form-group">
+                                    <legend>Estimate # hours to complete</legend>
+                                    <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="hoursRadios" id="hoursRadio1" value="5">
+                                        &lt; 20 hours                              
+                                    </label>
+                                    </div>
+                                    <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="hoursRadios" id="hoursRadio2" value="4">
+                                        21 - 40 hours
+                                    </label>
+                                    </div>
+                                    <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="hoursRadios" id="hoursRadio3" value="3">
+                                        40 - 80 hours
+                                    </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="radio" class="form-check-input" name="hoursRadios" id="hoursRadio4" value="2">
+                                            80 - 120 hours
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="radio" class="form-check-input" name="hoursRadios" id="hoursRadio5" value="1">
+                                            &gt; 120 hours
+                                        </label>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row" id="assignedToDiv">
+                            <div class="col-lg-6">
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="control-label">Assign To: </label> 
+                                        <select id="searchType" class="form-control">
+                                            <option value="1">Elham Saboori</option>
+                                            <option value="2">Nodira Mamatova</option>
+                                            <option value="3">Bilwa Buchake</option>
+                                            <option value="4">J. John</option>
+                                            <option value="5">Prabhu M.</option>
+                                        </select>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row" id="markCompletedDiv">
+                            <div class="col-lg-6">
+                                <div class="bs-component">
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="markCompleted">
+                                        <label class="custom-control-label" for="markCompleted">Completed/ Closed</label>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                </form>    
+            </div>    
+        </div>    
         <div class="row">
-            <div class="col-lg-4">
-                <div class="bs-component">
-                    <fieldset>
-                        <legend>Details</legend>
-                        <div class="form-group row">
-                            <label for="itemNumber" class="col-sm-2 col-form-label">Item Number</label>
-                            <div class="col-sm-10">
-                            <p class="lead" id="itemNumber"></p>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="assignmentGroup" class="col-sm-2 col-form-label">Assignment Group</label>
-                            <div class="col-sm-10">
-                            <p class="lead" id="assignmentGroup"></p>   
-                            </div>
-                        </div>
-                    </fieldset>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                    <div class="bs-component">
-                        <fieldset>
-                            <legend>&nbsp;</legend>
-                            <div class="form-group row">
-                                <label for="categoryItem" class="col-sm-2 col-form-label">Category Item</label>
-                                <div class="col-sm-10">
-                                <p class="lead" id="categoryItem"></p>  
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="requestedFor" class="col-sm-2 col-form-label">Requested For</label>
-                                <div class="col-sm-10">
-                                <p class="lead" id="requestedFor"></p>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="bs-component">
-                    <fieldset>
-                        <legend>&nbsp;</legend>
-                        <div class="form-group row">
-                            <label for="state" class="col-sm-2 col-form-label">State</label>
-                            <div class="col-sm-10">
-                            <p class="lead" id="state"></p> 
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="dueDate" class="col-sm-2 col-form-label">Due Date</label>
-                            <div class="col-sm-10">
-                            <p class="lead" id="dueDate"></p>   
-                            </div>
-                        </div>
-                    </fieldset> 
-                </div>
+            <div class="col-md-4"></div>
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <a id="submit" class="btn btn-primary form-control">Submit</a> 
             </div>
         </div>
-
-        <form>
-        <div class="row">
-            <div class="col-lg-8">
-              <div class="bs-component">
-
-                        <fieldset class="form-group">
-                        <legend>Requestor</legend>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                            <input type="radio" class="form-check-input" name="requestorRadios" id="requestorRadio1" value="7">
-                            President, CEO, EVP, Dean, Department Chair
-                            </label>
-                        </div>
-                        <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" class="form-check-input" name="requestorRadios" id="requestorRadio2" value="5">
-                            VP, Executive Director, Director or Manager (DoQ), Analyst (DoQ), Quality Champion, Medical Director
-                            </label>
-                        </div>
-                        <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" class="form-check-input" name="requestorRadios" id="requestorRadio3" value="3">
-                            Director (non-DoQ), Division or Service Chief, Administrative Director or equivalent
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="requestorRadios" id="requestorRadio4" value="2">
-                                Manager (non-DoQ), Attending MD, PharmD
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="requestorRadios" id="requestorRadio5" value="1">
-                                Analyst (non-DoQ), Supervised trainee projects
-                            </label>
-                        </div>
-                        </fieldset>
-
-
-                        <fieldset class="form-group">
-                          <legend>Purpose</legend>
-                          <div class="form-check">
-                            <label class="form-check-label">
-                              <input type="radio" class="form-check-input" name="purposeRadios" id="purposeRadio1" value="7">
-                              Joint Commission or other CMS Purposes, Corporate or Contractual Compliance, California Department of Public Health, Internal / External Audits, Other Regulatory/Compliance Purposes
-                            </label>
-                          </div>
-                          <div class="form-check">
-                          <label class="form-check-label">
-                              <input type="radio" class="form-check-input" name="purposeRadios" id="purposeRadio2" value="5">
-                              Improving Clinical Outcomes, Achieving Zero Harm                              
-                            </label>
-                          </div>
-                          <div class="form-check">
-                          <label class="form-check-label">
-                              <input type="radio" class="form-check-input" name="purposeRadios" id="purposeRadio3" value="3">
-                              Inpatient CDB/RM, Non-inpatient CDB/RM, Core Measures
-                            </label>
-                          </div>
-                          <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="purposeRadios" id="purposeRadio4" value="2">
-                                Other Quality Improvement Priorities
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="purposeRadios" id="purposeRadio5" value="1">
-                                True North non-Quality and Safety Pillars: Our People, Patient Experience, Financial Strength, Strategic Growth, Learning Health System
-                            </label>
-                        </div>
-                        </fieldset>
-
-                        
-                        <fieldset class="form-group">
-                            <legend>Estimate # hours to complete</legend>
-                            <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="hoursRadios" id="hoursRadio1" value="5">
-                                &lt; 20 hours                              
-                            </label>
-                            </div>
-                            <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="hoursRadios" id="hoursRadio2" value="4">
-                                21 - 40 hours
-                            </label>
-                            </div>
-                            <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="hoursRadios" id="hoursRadio3" value="3">
-                                40 - 80 hours
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="hoursRadios" id="hoursRadio4" value="2">
-                                80 - 120 hours
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="hoursRadios" id="hoursRadio5" value="1">
-                                &gt; 120 hours
-                            </label>
-                        </div>
-                        </fieldset>
-                        <fieldset>
-                            <div class="form-group">
-                                <select class="custom-select">
-                                    <option selected="">Assign To:</option>
-                                    <option value="1">Employee 1</option>
-                                    <option value="2">Employee 2</option>
-                                    <option value="3">Employee 3</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="markCompleted">
-                                    <label class="custom-control-label" for="markCompleted">Completed/ Closed</label>
-                                </div>
-                            </div>
-                        </fieldset>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-
-              </div>
-            </div>
-            <div class="col-lg-4 offset-lg-1">
-                <div class="bs-component">
-                    <fieldset>
-                        <div class="form-group">
-                            <select class="custom-select">
-                                <option selected="">Assign To:</option>
-                                <option value="1">Employee 1</option>
-                                <option value="2">Employee 2</option>
-                                <option value="3">Employee 3</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="markCompleted">
-                                <label class="custom-control-label" for="markCompleted">Completed/ Closed</label>
-                            </div>
-                        </div>
-                    </fieldset>
-                </div>
-            </div>  
-          </div>
-        </form>
+        <script src="../data/data1.js" type="text/javascript"></script>
+        <script src="../static/js/edit.js" type="text/javascript"></script>
         <hr />
         <footer>
             <p>2018 - Service Request Analytics</p>
