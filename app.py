@@ -103,12 +103,22 @@ def send():
         completed_datae = request.form[""]
         #checks if the priority table already exists if so will update the priority table with new values given in the post request
         if priority_query:
-            #This code logic is still in works 
             Total_weight = requestor_weight + purpose_weight + hours_weight
             Ticket_weight_float = interp(Total_weight, [1,19], [1,5])
             Total_weight_int = int(Ticket_weight_float)
-            new_priority_values = 
-
+            priority_query.requestor_priority = requestor_weight
+            priority_query.purpose_priority = purpose_weight
+            priority_query.hours_priority = hours_weight
+            session.commit()
+            priority_data = {"ticket_num":priority_query.ticket_num,
+            "req_priority": priority_query.requestor_priority,
+            "purpose_priority": priority_query.purpose_priority,
+            "hours_priority": priority_query.hours_priority,
+            "assigned":priority_query.assigned_to,
+            "completed":priority_query.completed,
+            "completed_date":priority_query.completed_date,
+            "total_priority":priority_query.total_priority}
+            return render_template("index.html", priority_data=priority_data)
 
         else:
             Total_weight = requestor_weight + purpose_weight + hours_weight
