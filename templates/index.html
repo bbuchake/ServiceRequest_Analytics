@@ -10,6 +10,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="shortcut icon" href="">
+
 </head>
 
 <body>
@@ -46,27 +48,28 @@
                 </div>
             </div>
         </div>
+<div class="jumbotron">
+                        <h3>Select department</h3>
+                        <select id="chosen_dep" onchange="optionChanged(this.value)">
+                        </select>
+                    </div>
+
         <div class="row">
           <div class="col-lg-6">
-            Visual 1
+                <div id="status"></div>
+                <canvas id="myChart" width="200" height="110"></canvas>
           </div>
-          <div class="col-lg-6">
-            Visual 2
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-6">
-            Visual 3
-          </div>
-          <div class="col-lg-6">
-            Visual 4
-          </div>
+            <div class="col-lg-6">
+                <div id="priority"></div>
+                <canvas id="myChart2" width="200" height="100"></canvas> 
+            </div>
         </div>
         <hr />
         <footer>
             <p>2018 - Service Request Analytics</p>
         </footer>
     </div>
-
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="{{ url_for('static', filename='js/visual.js') }}"></script>
 </body>
 </html>
