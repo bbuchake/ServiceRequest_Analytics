@@ -20,6 +20,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean
 from sqlalchemy import update
+from flask_sqlalchemy import SQLAlchemy
+import numpy as np
+import pandas as pd
 
 Base = automap_base()
 
@@ -55,6 +58,8 @@ class Ticket(Base):
   due_date = Column(DateTime, nullable=False)
   priority = Column(String(10), nullable=False)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:fghtmn504@localhost:3306/ServiceReqAnalytics'
+
 engine = create_engine('mysql+pymysql://root:Wonder303@localhost:3306/ServiceReqAnalytics')
 Base.prepare(engine, reflect=True)
 #conn = engine.connect()
@@ -62,6 +67,8 @@ session = Session(engine)
 
 priority = session.query(Priority)
 ticket = session.query(Ticket)
+db = SQLAlchemy(app)
+Base.metadata.create_all(engine)
 
 # create route that renders index.html template
 @app.route("/")
@@ -136,11 +143,55 @@ def post_ticket_no():
             "completed_date":priority_query.completed_date,
             "total_priority":priority_query.total_priority}
             return render_template("index.html", priority_data=priority_data)
- 
+
 @app.route("/all_tickets")
-def get_all_ticket():
-    #Code still in works
-    return None
+def all_tickets():
+   results = session.query(Ticket.ticket_num, Ticket.cat_item, Ticket.ticket_state, Ticket.assignment_group, Ticket.request_requested_for, Ticket.due_date).all()
+   return render_template('requests.html', resultSet=results)
+
+@app.route('/testdb')
+def testdb():
+    try:
+        db.session.query("1").from_statement("SELECT 1").all()
+        return '<h1>It works.</h1>'
+    except:
+        return '<h1>Something is broken.</h1>'
+
+#returns the list of all departments 
+@app.route("/departmentlist")
+def departments():
+  department_names = db.session.query(Ticket.assignment_group).distinct().all()
+  dep = list(np.ravel(department_names))
+  return jsonify(dep)
+
+
+#returns the count of each status for each department
+@app.route('/history/<department>')
+def team_performance(department):
+    results = db.session.query(Ticket.stage,func.count(Ticket.ticket_num)).group_by(Ticket.stage).filter(Ticket.assignment_group==department).all()
+    perf = list(np.ravel(results))
+    dep_df = {'status':[], 'count':[]}
+    for i in range(len(perf)):
+      if i%2==0:
+        dep_df['status'].append(perf[i])
+      else:
+        dep_df['count'].append(perf[i])
+    return jsonify(dep_df)
+
+
+#returns the count of different priorities 
+@app.route('/priority/<department>')
+def priority_dep(department):
+  results =  db.session.query(Ticket.priority, func.count(Ticket.ticket_num)).group_by(Ticket.priority).filter(Ticket.assignment_group == department).all()
+  perf = list(np.ravel(results))
+  dep_df = {'priority':[], 'count':[]}
+  for i in range(len(perf)):
+    if i%2==0:
+      dep_df['priority'].append(perf[i])
+    else:
+      dep_df['count'].append(perf[i])
+  return jsonify(dep_df)
+
 
 if __name__ == "__main__":
     app.run()
