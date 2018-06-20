@@ -61,7 +61,7 @@ Base.prepare(engine, reflect=True)
 session = Session(engine)
 
 priority = session.query(Priority)
-ticket = session.query(ticket)
+ticket = session.query(Ticket)
 
 # create route that renders index.html template
 @app.route("/")
@@ -69,29 +69,29 @@ def home():
     return render_template("index.html")
 
 # Query the database and send the jsonified results
-@app.route("/send", methods=["GET", "POST"])
-def send():
-    if request.method == "GET":
-        ticket_number = request.form["ticketNumber"]
-        #The below code checks if the the ticket_number already exists in priority table
-        priority_query = priority.filter_by(ticket_num = ticket_number).first()
-        ticket_query = ticket.filter_by(ticket_num = ticket_number).first()
-        if priority_query:
-            priority_data = {"ticket_num":priority_query.ticket_num,
-            "req_priority": priority_query.requestor_priority,
-            "purpose_priority": priority_query.purpose_priority,
-            "hours_priority": priority_query.hours_priority,
-            "assigned":priority_query.assigned_to,
-            "completed":priority_query.completed,
-            "completed_date":priority_query.completed_date,
-            "total_priority":priority_query.total_priority}
-            return render_template("index.html", priority_data=priority_data)
-        else:
-            #return value None when there exists no value for the priority table for a given ticket number
-            return None
-            
-    elif request.method == "POST":
-        ticket_number = request.form["ticketNumber"]
+@app.route("/get/<ticket_no>")
+def get_ticket_no():
+    ticket_number = ticket_no
+    #The below code checks if the the ticket_number already exists in priority table
+    priority_query = priority.filter_by(ticket_num = ticket_number).first()
+    ticket_query = ticket.filter_by(ticket_num = ticket_number).first()
+    if priority_query:
+        priority_data = {"ticket_num":priority_query.ticket_num,
+        "req_priority": priority_query.requestor_priority,
+        "purpose_priority": priority_query.purpose_priority,
+        "hours_priority": priority_query.hours_priority,
+        "assigned":priority_query.assigned_to,
+        "completed":priority_query.completed,
+        "completed_date":priority_query.completed_date,
+        "total_priority":priority_query.total_priority}
+        return render_template("index.html", priority_data=priority_data)
+    else:
+        #return value None when there exists no value for the priority table for a given ticket number
+        return None
+
+@app.route("/post/<ticket_no>")           
+def post_ticket_no():
+        ticket_number = ticket_no
         priority_query = priority.filter_by(ticket_num = ticket_number).first()
         ticket_query = ticket.filter_by(ticket_num = ticket_number).first()
         # values 7,5,3,2,1
