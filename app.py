@@ -55,7 +55,9 @@ class Ticket(Base):
   due_date = Column(DateTime, nullable=False)
   priority = Column(String(10), nullable=False)
 
-engine = create_engine('mysql+pymysql://root:Wonder303@localhost:3306/ServiceReqAnalytics')
+#engine = create_engine('mysql+pymysql://root:Wonder303@localhost:3306/ServiceReqAnalytics')
+engine = create_engine('mssql+pyodbc//MCCGWHWDB001/CDW')
+
 Base.prepare(engine, reflect=True)
 #conn = engine.connect()
 session = Session(engine)
