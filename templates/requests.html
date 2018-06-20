@@ -36,7 +36,6 @@
         </div>
     </div>
 </div>
-    <a href = "{{ url_for('send',itemNumber=RITM1234) }}">request[field]</a>
     <div class="container">
         <div id="banner">
             <h3>Service Requests</h3>
@@ -115,20 +114,15 @@
         </div>
     </div>
     <!--script src="../data/data1.js" type="text/javascript"></script-->
-    
-    
     <script src="{{ url_for('static', filename='js/requests.js') }}"></script>
     <script type="text/javascript">
-        // Set serviceRequests to dataSet initially
         var serviceRequests = {{ resultSet|tojson }};
-        //console.log(serviceRequests);
     </script>
-
-        <hr />
-        <footer>
-            <p>2018 - Service Request Analytics</p>
-        </footer>
-    </div>
+    <hr />
+    <footer>
+        <p>2018 - Service Request Analytics</p>
+    </footer>
+</div>
 
 </body>
 </html>

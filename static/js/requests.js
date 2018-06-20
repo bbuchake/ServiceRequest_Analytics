@@ -1,3 +1,4 @@
+
 // Get references to the tbody element, input field and buttons
 var $tbody = document.querySelector("tbody");
 var $searchType = document.querySelector("#searchType");
@@ -13,8 +14,9 @@ $searchBtn.addEventListener("click", handleSearchButtonClick);
 $records_per_page.addEventListener("change", updateRecordsPerPage);
 
 // Set serviceRequests to dataSet initially
-var serviceRequests = dataSet;
-console.log(serviceRequests);
+//var serviceRequests = dataSet;
+//console.log(serviceRequests);
+var dataSet = undefined;
 
 //Initialize Page 1
 var current_page = 1;
@@ -22,6 +24,7 @@ var max_page = 0;
 var min_page = 0;
 
 window.onload = function() {
+    dataSet = serviceRequests;
     // Render the table for the first time on page load and initialize page
     renderTable(1);
 };
@@ -65,10 +68,10 @@ function renderTable(page) {
     if (current_page < 1) current_page = 1;
     if (current_page > numPages()) current_page = numPages();
 
-    for (var i = (current_page-1) * records_per_page; i < (current_page * records_per_page) && i < dataSet.length; i++) {
+    for (var i = (current_page-1) * records_per_page; i < (current_page * records_per_page) && i < serviceRequests.length; i++) {
         // Get get the current request object and its fields    
         var request = serviceRequests[i];
-        console.log(request);
+        //console.log(request);
         var fields = Object.keys(request);
         var rowIndex = 0;
         // Create a new row in the tbody, set the index to be 0
@@ -103,15 +106,13 @@ function renderTable(page) {
 }
 
 function handleSearchButtonClick() {
-    console.log('Inside click');
+
     // Format the user's search by removing leading and trailing whitespace, lowercase the string  
     var filterSearch = $searchInput.value.trim().toLowerCase();
     var searchType = $searchType.value;
-    console.log('Filter Search: ' + filterSearch);
-    console.log('Search Type: ' + searchType);
     
     // Set serviceRequests to an array of all resquests whose "state" matches the filter  
-    serviceRequests = dataSet.filter(function (request) {
+    serviceRequests = dataSet.filter(function (reqObj) {
            
         var returnSearch = "";
 
@@ -119,48 +120,48 @@ function handleSearchButtonClick() {
         switch(searchType)
         {
             case '1':
-            	if(request.number) {
-            		var reqNumber = request.number.toLowerCase();
+            	if(reqObj[0]) {
+            		var reqNumber = reqObj[0].toLowerCase();
                 	returnSearch = reqNumber;
                 	}
                 else 
                 	returnSearch = reqNumber;
                 	 break;
             case '2':
-            	if(request.cat_item) {
-            	    var reqCatItem = request.cat_item.toLowerCase();
+            	if(reqObj[1]) {
+            	    var reqCatItem = reqObj[1].toLowerCase();
                     returnSearch = reqCatItem;
                 }
                 else 
                 	returnSearch = reqNumber;
                  break;
             case '3':
-            	if(request.state) {
-            	    var reqState = request.state.toLowerCase();
+            	if(reqObj[2]) {
+            	    var reqState = reqObj[2].toLowerCase();
                 	returnSearch = reqState;
                 }
                 else 
                 	returnSearch = reqNumber;
                  break;
             case '4':
-            	if(request.assignment_group) {
-            		var reqAsgnGroup = request.assignment_group.toLowerCase();
+            	if(reqObj[3]) {
+            		var reqAsgnGroup = reqObj[3].toLowerCase();
                 	returnSearch = reqAsgnGroup;
                 }
                 else 
                 	returnSearch = reqNumber;
                  break;
             case '5':
-            	if(request.request_requested_for) {
-            	    var reqFor = request.request_requested_for.toLowerCase();
+            	if(reqObj[4]) {
+            	    var reqFor = reqObj[4].toLowerCase();
                 	returnSearch =  reqFor;
                 }
                 else 
                 	returnSearch = reqNumber;
                  break;
             case '6':
-                if(request.due_date) {
-                	var reqDueDate  = request.due_date.toLowerCase();
+                if(reqObj[5]) {
+                	var reqDueDate  = reqObj[5].toLowerCase();
             		returnSearch  = reqDueDate;
             	}
             	else 
