@@ -16,7 +16,7 @@
     <div class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <a href="index.html" class="navbar-brand">Service Request Analytics</a>
+                <a href="{{ url_for('home') }}" class="navbar-brand">Service Request Analytics</a>
                 <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -26,10 +26,10 @@
             <div class="navbar-collapse collapse" id="navbar-main">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="index.html">Home</a>
+                        <a href="{{ url_for('home') }}">Home</a>
                     </li>
                     <li>
-                        <a href="requests.html">Service Requests</a>
+                        <a href="{{ url_for('all_tickets') }}">Service Requests</a>
                     </li>
                 </ul>
 
@@ -57,7 +57,7 @@
                                     <div class="form-group row">
                                         <label for="itemNumber" class="col-sm-2 col-form-label">Item Number</label>
                                         <div class="col-sm-10">
-                                        <p id="itemNumber"></p>
+                                        <p id="itemNumber">{{ticket_num}}</p>
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -98,6 +98,7 @@
                                 </fieldset>
                             </div>
                         </div> 
+                        <form method="POST" action="/send" >
                         <div class="row">
                             <div class="col-lg-12">
                                 <fieldset class="form-group">
@@ -249,6 +250,7 @@
                 <a id="submit" class="btn btn-primary form-control">Submit</a> 
             </div>
         </div>
+        </form>
         <script src="../data/data1.js" type="text/javascript"></script>
         <script src="../static/js/edit.js" type="text/javascript"></script>
         <hr />

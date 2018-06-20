@@ -16,7 +16,7 @@
   <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <a href="index.html" class="navbar-brand">Service Request Analytics</a>
+            <a href="{{ url_for('home') }}" class="navbar-brand">Service Request Analytics</a>
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -26,10 +26,10 @@
         <div class="navbar-collapse collapse" id="navbar-main">
             <ul class="nav navbar-nav">
                 <li>
-                    <a href="index.html">Home</a>
+                    <a href="{{ url_for('home') }}">Home</a>
                 </li>
                 <li>
-                    <a href="requests.html">Service Requests</a>
+                    <a href="{{ url_for('all_tickets') }}">Service Requests</a>
                 </li>
             </ul>
 
@@ -46,7 +46,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
           <div class="col-lg-6">
             Visual 1
