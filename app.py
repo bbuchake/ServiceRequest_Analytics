@@ -31,7 +31,7 @@ class Priority(Base):
 
   ID = Column(Integer, primary_key=True)
   ticket_num = Column(String(15), nullable=False)
-  requestor_priority = Column(Integer)
+  req_priority = Column(Integer)
   purpose_priority = Column(Integer)
   hours_priority = Column(Integer)
   assigned_to = Column(String(100))
@@ -58,19 +58,20 @@ class Ticket(Base):
   due_date = Column(DateTime, nullable=False)
   priority = Column(String(10), nullable=False)
 
+#For connecting to SQL Server
 import urllib
 params = urllib.parse.quote_plus("DRIVER={SQL Server Native Client 10.0};SERVER=localhost\SQLEXPRESS;DATABASE=ServiceRequests;TRUSTED_CONNECTION=yes")
-
 engine = create_engine("mssql+pyodbc:///?odbc_connect=%s" % params)
 
+#For connecting to MySQL
 #engine = create_engine('mysql+pymysql://root:Wonder303@localhost:3306/ServiceReqAnalytics')
-#engine = create_engine('mssql+pyodbc://MCCGWHWDB001/CDW', pool_pre_ping=True)
+
 
 Base.prepare(engine, reflect=True)
 #conn = engine.connect()
 session = Session(engine)
 
-#priority = session.query(Priority)
+priority = session.query(Priority)
 ticket = session.query(Ticket)
 #db = SQLAlchemy(app)
 #Base.metadata.create_all(engine)
@@ -80,24 +81,44 @@ ticket = session.query(Ticket)
 def home():
     return render_template("index.html")
 
-# # Query the database and send the jsonified results
-# @app.route("/get/<ticket_no>")
-# def get_ticket_no():
-#     ticket_number = ticket_no
-#     #The below code checks if the the ticket_number already exists in priority table
-#     priority_query = priority.filter_by(ticket_num = ticket_number).first()
-#     ticket_query = ticket.filter_by(ticket_num = ticket_number).first()
-#     if priority_query:
+# Query the database and send the jsonified results
+@app.route("/get/<ticket_no>")
+def get_ticket_no(ticket_no=None):
+    #Check whether the the ticket number already exists in priority table
+    priority_query = session.query(Priority.ticket_num, Priority.req_priority, Priority.purpose_priority, Priority.hours_priority, Priority.assigned_to, Priority.completed, Priority.completed_date, Priority.total_priority).join(Ticket, Priority.ticket_num == Ticket.ticket_num).add_columns(Ticket.ticket_num, Ticket.cat_item, Ticket.ticket_state, Ticket.assignment_group, Ticket.request_requested_for, Ticket.due_date).all()
+
+    #return jsonify(priority_query)
+    
+    if priority_query:
+        priority_data = {"ticket_num":priority_query[0][0],
+        "req_priority": priority_query[0][1],
+        "purpose_priority": priority_query[0][2],
+        "hours_priority": priority_query[0][3],
+        "assigned_to":priority_query[0][4],
+        "completed":priority_query[0][5],
+        "completed_date":priority_query[0][6],
+        "total_priority":priority_query[0][7],
+        "cat_item":priority_query[0][9],
+        "ticket_state":priority_query[0][10],
+        "assignment_group":priority_query[0][11],
+        "requested_for":priority_query[0][12],
+        "due_date":priority_query[0][13]}
+        return render_template("edit.html", priority_data=priority_data)
+    else:
+         #return value None when there exists no value for the priority table for a given ticket number
+        return None
+
+#    if priority_query:
 #         priority_data = {"ticket_num":priority_query.ticket_num,
-#         "req_priority": priority_query.requestor_priority,
+#         "req_priority": priority_query.req_priority,
 #         "purpose_priority": priority_query.purpose_priority,
 #         "hours_priority": priority_query.hours_priority,
-#         "assigned":priority_query.assigned_to,
+#         "assigned_to":priority_query.assigned_to,
 #         "completed":priority_query.completed,
 #         "completed_date":priority_query.completed_date,
 #         "total_priority":priority_query.total_priority}
-#         return render_template("index.html", priority_data=priority_data)
-#     else:
+#         return render_template("edit.html", priority_data=priority_data)
+#    else:
 #         #return value None when there exists no value for the priority table for a given ticket number
 #         return None
 
@@ -153,6 +174,7 @@ def home():
 def all_tickets():
    results = session.query(Ticket.ticket_num, Ticket.cat_item, Ticket.ticket_state, Ticket.assignment_group, Ticket.request_requested_for, Ticket.due_date).all()
    return render_template('requests.html', resultSet=results)
+   #return jsonify(results)
 
 # @app.route('/testdb')
 # def testdb():

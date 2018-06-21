@@ -6,44 +6,110 @@ var $searchInput = document.querySelector("#searchText");
 var $searchBtn = document.querySelector("#search");
 
 //Set number of records per page for pagination
-var $records_per_page =document.querySelector("#recordsPerPage");
+var $records_per_page = document.querySelector("#recordsPerPage");
 var records_per_page = $records_per_page.value;
-
-// Add an event listener to the searchButton, call handleSearchButtonClick when clicked
-$searchBtn.addEventListener("click", handleSearchButtonClick);
-$records_per_page.addEventListener("change", updateRecordsPerPage);
 
 // Set serviceRequests to dataSet initially
 //var serviceRequests = dataSet;
 //console.log(serviceRequests);
-var dataSet = undefined;
+var dataSet;
 
 //Initialize Page 1
 var current_page = 1;
 var max_page = 0;
 var min_page = 0;
 
-window.onload = function() {
-    dataSet = serviceRequests;
-    // Render the table for the first time on page load and initialize page
-    renderTable(1);
-};
-//Event for handling the number of pages to be displayed per page
-function updateRecordsPerPage() {
-    records_per_page=$records_per_page.value;
-    renderTable(1);
+//Function for previous page
+function prevPage() {
+    if (current_page > 1) {
+        current_page--;
+        renderTable(current_page);
+    }
 }
 
+function paginate(min_page, max_page) {
+    //Declarations
+    var li, link, x, $pages;
+
+    //Get handle to ul
+    $pages = document.querySelector("#pages");
+    //Clear ul
+    $pages.innerHTML = '';
+
+    //Create li for previous button
+    li = document.createElement("li"); //Create list item
+    li.setAttribute("id", "pagePrev"); // add id
+    li.setAttribute("class", "page-item"); //add class
+
+    link = document.createElement("a"); //Create link
+    link.setAttribute('class', 'page-link');//add class
+    link.setAttribute('id', 'btn_prev'); //add id
+    link.innerHTML = '<<';
+    link.addEventListener("click", prevPage);
+
+    li.appendChild(link);
+    $pages.appendChild(li);
+
+    link = undefined;
+    li = undefined;
+
+    //Create li(s) for pages
+    for (x = min_page; x <= max_page; x++) {
+        li = document.createElement("li"); //Create list item
+        li.setAttribute("id", "page" + x); // add id
+        li.setAttribute("class", "page-item"); //add class
+
+        link = document.createElement("a"); //Create link
+        link.setAttribute('class', 'page-link');//add class
+        link.setAttribute('id', 'link' + x); //add id
+        link.innerHTML = x; //add text
+        
+        link.addEventListener("click", function () {
+            renderTable(this.innerHTML);
+        }, false);
+
+
+        li.appendChild(link);
+
+        $pages.appendChild(li);
+
+        link = undefined;
+        li = undefined;
+
+        }
+
+    //Create li for next button
+    li = document.createElement("li"); //Create list item
+    li.setAttribute("id", "pageNext"); // add id
+    li.setAttribute("class", "page-item") //add class
+
+    link = document.createElement("a"); //Create link
+    link.setAttribute('class', 'page-link');//add class
+    link.setAttribute('id', 'btn_next'); //add id
+    link.innerHTML = '>>';
+    link.addEventListener("click", nextPage);
+
+    li.appendChild(link);
+    $pages.appendChild(li);
+
+    link = undefined;
+    li = undefined;
+    
+    
+  }
 
 // renderTable renders the serviceRequests to the tbody
 function renderTable(page) {
+    //Declarations
+    var i;
+    
     $tbody.innerHTML = "";
 
     //Check page number and decide min_page and max_page for pagination
-    if(page % 10 > 0){
+    if (page % 10 > 0) {
 
-        min_page = +(page - (page % 10)) + +1;
-        max_page = +page + +(10 - (page % 10));
+        min_page = +(page - (page % 10)) + 1;
+        max_page = +page + (10 - (page % 10));
 
         paginate(min_page, max_page);
 
@@ -65,10 +131,10 @@ function renderTable(page) {
 
     
     // Validate page
-    if (current_page < 1) current_page = 1;
-    if (current_page > numPages()) current_page = numPages();
+    if (current_page < 1) { current_page = 1; }
+    if (current_page > numPages()) { current_page = numPages(); }
 
-    for (var i = (current_page-1) * records_per_page; i < (current_page * records_per_page) && i < serviceRequests.length; i++) {
+    for (i = (current_page-1) * records_per_page; i < (current_page * records_per_page) && i < serviceRequests.length; i++) {
         // Get get the current request object and its fields    
         var request = serviceRequests[i];
         //console.log(request);
@@ -82,8 +148,8 @@ function renderTable(page) {
             var field = fields[j];
             var $cell = $row.insertCell(j);
             if(j == 0) {
-                $cell.innerHTML = "<a href='edit.html?item_number=" + request[field] + "'>" + request[field] + "</a>";
-                //$cell.innerHTML = "<a href = {{ url_for('edit',item_number=" + request[field] + ") }}>" + request[field] + "</a>";
+                //$cell.innerHTML = "<a href='edit.html?item_number=" + request[field] + "'>" + request[field] + "</a>";
+                $cell.innerHTML = "<a href = \"/get/" + request[field] + "\" target=\"_blank\">" + request[field] + "</a>";
             }
             else
                 $cell.innerText = request[field];
@@ -185,14 +251,7 @@ function numPages() {
 }
 
 
-//Function for previous page
-function prevPage()
-{
-    if (current_page > 1) {
-        current_page--;
-        renderTable(current_page);
-    }
-}
+
 
 //Function for next page
 function nextPage()
@@ -202,71 +261,21 @@ function nextPage()
         renderTable(current_page);
     }
 }
-function paginate(min_page, max_page) {
-
-    //Get handle to ul
-    var $pages = document.querySelector("#pages");
-    //Clear ul
-    $pages.innerHTML = '';
-
-    //Create li for previous button
-    var li = document.createElement("li"); //Create list item
-    li.setAttribute("id", "pagePrev"); // add id
-    li.setAttribute("class", "page-item") //add class
-
-    var link = document.createElement("a"); //Create link
-    link.setAttribute('class', 'page-link');//add class
-    link.setAttribute('id', 'btn_prev'); //add id
-    link.innerHTML = '<<';
-    link.addEventListener("click", prevPage);
-
-    li.appendChild(link);
-    $pages.appendChild(li);
-
-    link = undefined;
-    li = undefined;
-
-    //Create li(s) for pages
-    for(x=min_page;x<=max_page;x++) {
-        var li = document.createElement("li"); //Create list item
-        li.setAttribute("id", "page" + x); // add id
-        li.setAttribute("class", "page-item") //add class
-
-        var link = document.createElement("a"); //Create link
-        link.setAttribute('class', 'page-link');//add class
-        link.setAttribute('id', 'link' + x); //add id
-        link.innerHTML = x; //add text
-        
-        link.addEventListener("click", function () {
-            renderTable(this.innerHTML);
-        }, false);
 
 
-        li.appendChild(link);
 
-        $pages.appendChild(li);
+window.onload = function () {
+    dataSet = serviceRequests;
+    // Render the table for the first time on page load and initialize page
+    renderTable(1);
+};
 
-        link = undefined;
-        li = undefined;
+//Event for handling the number of pages to be displayed per page
+function updateRecordsPerPage() {
+    records_per_page=$records_per_page.value;
+    renderTable(1);
+}
 
-        }
-
-    //Create li for next button
-    var li = document.createElement("li"); //Create list item
-    li.setAttribute("id", "pageNext"); // add id
-    li.setAttribute("class", "page-item") //add class
-
-    var link = document.createElement("a"); //Create link
-    link.setAttribute('class', 'page-link');//add class
-    link.setAttribute('id', 'btn_next'); //add id
-    link.innerHTML = '>>';
-    link.addEventListener("click", nextPage);
-
-    li.appendChild(link);
-    $pages.appendChild(li);
-
-    link = undefined;
-    li = undefined;
-    
-    
-  }
+// Add an event listener to the searchButton, call handleSearchButtonClick when clicked
+$searchBtn.addEventListener("click", handleSearchButtonClick);
+$records_per_page.addEventListener("change", updateRecordsPerPage);
