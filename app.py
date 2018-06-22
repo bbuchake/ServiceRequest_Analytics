@@ -24,6 +24,7 @@ from sqlalchemy import update
 import numpy as np
 import pandas as pd
 
+#Define classes
 Base = automap_base()
 
 class Priority(Base):
@@ -59,6 +60,8 @@ class Ticket(Base):
   priority = Column(String(10), nullable=False)
 
 #For connecting to SQL Server
+
+#Connect to SQL Server
 import urllib
 params = urllib.parse.quote_plus("DRIVER={SQL Server Native Client 10.0};SERVER=localhost\SQLEXPRESS;DATABASE=ServiceRequests;TRUSTED_CONNECTION=yes")
 engine = create_engine("mssql+pyodbc:///?odbc_connect=%s" % params)
@@ -66,15 +69,11 @@ engine = create_engine("mssql+pyodbc:///?odbc_connect=%s" % params)
 #For connecting to MySQL
 #engine = create_engine('mysql+pymysql://root:Wonder303@localhost:3306/ServiceReqAnalytics')
 
-
 Base.prepare(engine, reflect=True)
-#conn = engine.connect()
 session = Session(engine)
 
-priority = session.query(Priority)
-ticket = session.query(Ticket)
-#db = SQLAlchemy(app)
-#Base.metadata.create_all(engine)
+#priority = session.query(Priority)
+#ticket = session.query(Ticket)
 
 # create route that renders index.html template
 @app.route("/")
@@ -82,45 +81,48 @@ def home():
     return render_template("index.html")
 
 # Query the database and send the jsonified results
-@app.route("/get/<ticket_no>")
+@app.route("/priority/<ticket_no>")
 def get_ticket_no(ticket_no=None):
-    #Check whether the the ticket number already exists in priority table
-    priority_query = session.query(Priority.ticket_num, Priority.req_priority, Priority.purpose_priority, Priority.hours_priority, Priority.assigned_to, Priority.completed, Priority.completed_date, Priority.total_priority).join(Ticket, Priority.ticket_num == Ticket.ticket_num).add_columns(Ticket.ticket_num, Ticket.cat_item, Ticket.ticket_state, Ticket.assignment_group, Ticket.request_requested_for, Ticket.due_date).all()
+    if request.method == "GET":
+        #Get data from Ticket and Priority tables. A Left Outer join will help get ticket data whether Priority data exists or doesn't
+        priority_query = session.query(Ticket.ticket_num, Ticket.cat_item, Ticket.ticket_state, Ticket.assignment_group, Ticket.request_requested_for, Ticket.due_date).join(Priority, Ticket.ticket_num == Priority.ticket_num, isouter=True).add_columns(Priority.req_priority, Priority.purpose_priority, Priority.hours_priority, Priority.assigned_to, Priority.completed, Priority.completed_date, Priority.total_priority).filter(Ticket.ticket_num==ticket_no).all()
 
-    #return jsonify(priority_query)
+        #Added this line to be able to check None prior to javascript
+        req_priority = priority_query[0][6] if priority_query[0][6] != None else 0
+        #return jsonify(priority_query)
+
+        if priority_query:
+            priority_data = {"ticket_num":priority_query[0][0],
+                             "cat_item":priority_query[0][1],
+                             "ticket_state":priority_query[0][2],
+                             "assignment_group":priority_query[0][3],
+                             "requested_for":priority_query[0][4],
+                             "due_date":priority_query[0][5],
+                             "req_priority": req_priority,
+                             "purpose_priority": priority_query[0][7],
+                             "hours_priority": priority_query[0][8],
+                             "assigned_to":priority_query[0][9],
+                             "completed":priority_query[0][10],
+                             "completed_date":priority_query[0][11],
+                             "total_priority":priority_query[0][12]
+                            }
+            return render_template("edit.html", priority_data=priority_data)
+        else:
+             #return value None when there exists no value for the priority table for a given ticket number
+            return render_template("error.html")
     
-    if priority_query:
-        priority_data = {"ticket_num":priority_query[0][0],
-        "req_priority": priority_query[0][1],
-        "purpose_priority": priority_query[0][2],
-        "hours_priority": priority_query[0][3],
-        "assigned_to":priority_query[0][4],
-        "completed":priority_query[0][5],
-        "completed_date":priority_query[0][6],
-        "total_priority":priority_query[0][7],
-        "cat_item":priority_query[0][9],
-        "ticket_state":priority_query[0][10],
-        "assignment_group":priority_query[0][11],
-        "requested_for":priority_query[0][12],
-        "due_date":priority_query[0][13]}
-        return render_template("edit.html", priority_data=priority_data)
-    else:
-         #return value None when there exists no value for the priority table for a given ticket number
-        return None
-
-#    if priority_query:
-#         priority_data = {"ticket_num":priority_query.ticket_num,
-#         "req_priority": priority_query.req_priority,
-#         "purpose_priority": priority_query.purpose_priority,
-#         "hours_priority": priority_query.hours_priority,
-#         "assigned_to":priority_query.assigned_to,
-#         "completed":priority_query.completed,
-#         "completed_date":priority_query.completed_date,
-#         "total_priority":priority_query.total_priority}
-#         return render_template("edit.html", priority_data=priority_data)
-#    else:
-#         #return value None when there exists no value for the priority table for a given ticket number
-#         return None
+@app.route("/priority", methods=["GET","POST"])
+def add_priority():
+    if request.method == "POST":
+        ticket_no = request.form["itemNumber"]
+#        requestor_weight = request.form["requestorRadios"]
+#        purpose_weight = request.form["purposeRadios"]
+#        hours_weight = request.form["hoursRadios"]
+#        assigned_to = request.form[""]
+#        completed = request.form[""]
+#        completed_datae = request.form[""]
+#        total_weight = int(interp(requestor_weight + purpose_weight + hours_weight, [1,19], [1,5]))
+        return render_template("error.html")
 
 # @app.route("/post/<ticket_no>")           
 # def post_ticket_no():

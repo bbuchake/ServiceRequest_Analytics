@@ -1,9 +1,6 @@
 
 var urlParams = new URLSearchParams(window.location.search);
 
-// Set serviceRequests to dataSet initially
-var serviceRequest;
-
 //Get reference to Submit button
 var $submitBtn = document.querySelector("#submit");
 $submitBtn.addEventListener("click", handleSubmitButtonClick);
@@ -31,15 +28,16 @@ window.onload = function() {
 function handleSubmitButtonClick() {
     var errorMessages = "Oh snap!";
     //Check whether radio buttons are clicked
-    if(document.querySelector("input[name='requestorRadios']:checked").val() == undefined) {
+    if(document.querySelector("input[name='requestorRadios']:checked") == null) {
         errorMessages = errorMessages + "<br/> You need to select a Requestor.";
     }
-    if(document.querySelector("input[name='purposeRadios']:checked").val() == undefined) {
-        errorMessages = errorMessages + "<br/> You need to select a Requestor.";
+    if(document.querySelector("input[name='purposeRadios']:checked") == null) {
+        errorMessages = errorMessages + "<br/> You need to select a Purpose.";
     }
-    if(document.querySelector("input[name='hoursRadios']:checked").val() == undefined) {
+    if(document.querySelector("input[name='hoursRadios']:checked") == null) {
         errorMessages = errorMessages + "<br/> You need to select Hours.";
     }
+    //Check whether there were any errors
     if(errorMessages.length > 10)
     {
         //There were error messages
@@ -50,12 +48,7 @@ function handleSubmitButtonClick() {
     {
         //No error messages
         $alertDiv.style.display = 'none';
-        //Get values of the radio buttons clicked
-        var requestorRadios = document.querySelector("input[name='requestorRadios']:checked").val();
-        var purposeRadios = document.querySelector("input[name='purposeRadios']:checked").val();
-        var hoursRadios = document.querySelector("input[name='hoursRadios']:checked").val();
-        //Send values to the flask endpoint
-        //***************************************
+        document.querySelector("#frmPriority").submit();
     }
     
     

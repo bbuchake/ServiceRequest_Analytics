@@ -149,7 +149,7 @@ function renderTable(page) {
             var $cell = $row.insertCell(j);
             if(j == 0) {
                 //$cell.innerHTML = "<a href='edit.html?item_number=" + request[field] + "'>" + request[field] + "</a>";
-                $cell.innerHTML = "<a href = \"/get/" + request[field] + "\" target=\"_blank\">" + request[field] + "</a>";
+                $cell.innerHTML = "<a href = \"/priority/" + request[field] + "\" target=\"_blank\">" + request[field] + "</a>";
             }
             else
                 $cell.innerText = request[field];
