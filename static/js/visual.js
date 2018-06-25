@@ -1,4 +1,4 @@
-var url = "/departmentlist";
+var url = '/departmentlist';
 //console.log(url);
 var select = document.getElementById('chosen_dep')
 
@@ -11,15 +11,15 @@ Plotly.d3.json(url, function(error, response){
         option.innerHTML = data[i];
         select.appendChild(option);
     }
-
     optionChanged(data[0]);
 });
 
 function optionChanged(department){
 
     var url1= `/history/${department}`;
-    Plotly.d3.json(url1, function (error, response) {
 
+    Plotly.d3.json(url1, function (error, response) {
+        console.log(response);
         var trace = [{
         type: "bar",
         x: response['status'],
@@ -53,7 +53,7 @@ function optionChanged(department){
 
     var url2 = `/priority/${department}`;
     Plotly.d3.json(url2, function(error, response){
-        
+        console.log(response);
         //Create pie chart
             var trace = [{
         type: "pie",

@@ -20,6 +20,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean
 from sqlalchemy import update
+from sqlalchemy import func
 #from flask_sqlalchemy import SQLAlchemy
 import numpy as np
 import pandas as pd
@@ -28,42 +29,42 @@ import pandas as pd
 Base = automap_base()
 
 class Priority(Base):
-  __tablename__ = 'Priority'
+    __tablename__ = 'Priority'
 
-  ID = Column(Integer, primary_key=True)
-  ticket_num = Column(String(15), nullable=False)
-  req_priority = Column(Integer)
-  purpose_priority = Column(Integer)
-  hours_priority = Column(Integer)
-  assigned_to = Column(String(100))
-  completed = Column(Boolean)
-  completed_date = Column(DateTime)
-  total_priority = Column(Integer)
+    ID = Column(Integer, primary_key=True)
+    ticket_num = Column(String(15), nullable=False)
+    req_priority = Column(Integer)
+    purpose_priority = Column(Integer)
+    hours_priority = Column(Integer)
+    assigned_to = Column(String(100))
+    completed = Column(Boolean)
+    completed_date = Column(DateTime)
+    total_priority = Column(Integer)
 
 class Ticket(Base):
-  __tablename__ = 'Tickets'
+    __tablename__ = 'Tickets'
 
-  ID = Column(Integer, primary_key=True)
-  ticket_num = Column(String(15), nullable=False)
-  cat_item = Column(String(250), nullable=False)
-  ticket_state = Column(String(50), nullable=False)
-  approval = Column(String(15), nullable=False)
-  stage = Column(String(100))
-  assignment_group = Column(String(100), nullable=False)
-  assigned_to = Column(String(100))
-  request = Column(String(15), nullable=False)
-  request_requested_for = Column(String(100), nullable=False)
-  sys_created_on = Column(DateTime, nullable=False)
-  contact_type = Column(String(10), nullable=False)
-  description = Column(String(250))
-  due_date = Column(DateTime, nullable=False)
-  priority = Column(String(10), nullable=False)
+    ID = Column(Integer, primary_key=True)
+    ticket_num = Column(String(15), nullable=False)
+    cat_item = Column(String(250), nullable=False)
+    ticket_state = Column(String(50), nullable=False)
+    approval = Column(String(15), nullable=False)
+    stage = Column(String(100))
+    assignment_group = Column(String(100), nullable=False)
+    assigned_to = Column(String(100))
+    request = Column(String(15), nullable=False)
+    request_requested_for = Column(String(100), nullable=False)
+    sys_created_on = Column(DateTime, nullable=False)
+    contact_type = Column(String(10), nullable=False)
+    description = Column(String(250))
+    due_date = Column(DateTime, nullable=False)
+    priority = Column(String(10), nullable=False)
 
 #For connecting to SQL Server
 
 #Connect to SQL Server
 import urllib
-params = urllib.parse.quote_plus("DRIVER={SQL Server Native Client 10.0};SERVER=localhost\SQLEXPRESS;DATABASE=ServiceRequests;TRUSTED_CONNECTION=yes")
+params = urllib.parse.quote_plus("DRIVER={SQL Server Native Client 10.0};SERVER=localhost\SQLEXPRESS;DATABASE=ServiceRequests;TRUSTED_CONNECTION=yes;MARS_Connection=Yes")
 engine = create_engine("mssql+pyodbc:///?odbc_connect=%s" % params)
 
 #For connecting to MySQL
@@ -115,14 +116,15 @@ def get_ticket_no(ticket_no=None):
 def add_priority():
     if request.method == "POST":
         ticket_no = request.form["itemNumber"]
-#        requestor_weight = request.form["requestorRadios"]
-#        purpose_weight = request.form["purposeRadios"]
-#        hours_weight = request.form["hoursRadios"]
+        requestor_weight = request.form["requestorRadios"]
+        purpose_weight = request.form["purposeRadios"]
+        hours_weight = request.form["hoursRadios"]
 #        assigned_to = request.form[""]
 #        completed = request.form[""]
 #        completed_datae = request.form[""]
-#        total_weight = int(interp(requestor_weight + purpose_weight + hours_weight, [1,19], [1,5]))
-        return render_template("error.html")
+        total_weight = interp(int(requestor_weight) + int(purpose_weight) + int(hours_weight), [1,19], [1,5])
+        #total_weight = int(requestor_weight) + int(purpose_weight) + int(hours_weight)
+        return render_template("error.html", total_weight = total_weight)
 
 # @app.route("/post/<ticket_no>")           
 # def post_ticket_no():
@@ -186,40 +188,40 @@ def all_tickets():
 #     except:
 #         return '<h1>Something is broken.</h1>'
 
-# #returns the list of all departments 
-# @app.route("/departmentlist")
-# def departments():
-#   department_names = session.query(Ticket.assignment_group).distinct().all()
-#   dep = list(np.ravel(department_names))
-#   return jsonify(dep)
+ #returns the list of all departments 
+@app.route("/departmentlist")
+def departments():
+    department_names = session.query(Ticket.assignment_group).distinct().all()
+    dep = list(np.ravel(department_names))
+    return jsonify(dep)
 
 
-# #returns the count of each status for each department
-# @app.route('/history/<department>')
-# def team_performance(department):
-#     results = session.query(Ticket.stage, func.count(Ticket.ticket_num)).group_by(Ticket.stage).filter(Ticket.assignment_group==department).all()
-#     perf = list(np.ravel(results))
-#     dep_df = {'status':[], 'count':[]}
-#     for i in range(len(perf)):
-#       if i%2==0:
-#         dep_df['status'].append(perf[i])
-#       else:
-#         dep_df['count'].append(perf[i])
-#     return jsonify(dep_df)
+ #returns the count of each status for each department
+@app.route('/history/<department>')
+def team_performance(department):
+    results = session.query(Ticket.stage, func.count(Ticket.ticket_num)).group_by(Ticket.stage).filter(Ticket.assignment_group==department).all()
+    perf = list(np.ravel(results))
+    dep_df = {'status':[], 'count':[]}
+    for i in range(len(perf)):
+        if i%2==0:
+            dep_df['status'].append(perf[i])
+        else:
+            dep_df['count'].append(perf[i])
+    return jsonify(dep_df)
 
 
-# #returns the count of different priorities 
-# @app.route('/priority/<department>')
-# def priority_dep(department):
-#   results =  session.query(Ticket.priority, func.count(Ticket.ticket_num)).group_by(Ticket.priority).filter(Ticket.assignment_group == department).all()
-#   perf = list(np.ravel(results))
-#   dep_df = {'priority':[], 'count':[]}
-#   for i in range(len(perf)):
-#     if i%2==0:
-#       dep_df['priority'].append(perf[i])
-#     else:
-#       dep_df['count'].append(perf[i])
-#   return jsonify(dep_df)
+ #returns the count of different priorities 
+@app.route('/priority/<department>')
+def priority_dep(department):
+    results =  session.query(Ticket.priority, func.count(Ticket.ticket_num)).group_by(Ticket.priority).filter(Ticket.assignment_group==department).all()
+    prior = list(np.ravel(results))
+    dep_df = {'priority':[], 'count':[]}
+    for i in range(len(prior)):
+        if i%2==0:
+            dep_df['priority'].append(prior[i])
+        else:
+            dep_df['count'].append(prior[i])
+    return jsonify(dep_df)
 
 
 if __name__ == "__main__":
