@@ -102,7 +102,7 @@
                             <div class="col-lg-12">
                                 <fieldset class="form-group">
                                     <legend>Requestor</legend>
-                                    <input hidden="" id="itemNumber" name="itemNumber">{{priority_data.ticket_num}}</input>
+                                    <input hidden="" id="itemNumber" name="itemNumber" value={{priority_data.ticket_num}}>
                                     <div class="form-check">
                                         <label class="form-check-label">
                                         <input type="radio" class="form-check-input" name="requestorRadios" id="requestorRadio1" value="7">
@@ -216,12 +216,12 @@
                                 <fieldset>
                                     <div class="form-group">
                                         <label class="control-label">Assign To: </label> 
-                                        <select id="searchType" class="form-control">
-                                            <option value="1">Elham Saboori</option>
-                                            <option value="2">Nodira Mamatova</option>
-                                            <option value="3">Bilwa Buchake</option>
-                                            <option value="4">J. John</option>
-                                            <option value="5">Prabhu M.</option>
+                                        <select id="assignedTo" name="assignedTo" class="form-control">
+                                            <option value="0" selected>--Please select employee--</option>
+                                            <option value="1">Bilwa Buchake</option>
+                                            <option value="2">Janelle Lee</option>
+                                            <option value="3">Justice Dahle</option>
+                                            <option value="4">Mindy Hou</option>
                                         </select>
                                     </div>
                                 </fieldset>
@@ -232,7 +232,8 @@
                                 <div class="bs-component">
                                 <div class="form-group">
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="markCompleted">
+                                        <input type="checkbox" class="custom-control-input" id="markCompleted" name="markCompleted">
+                                        <input id='markCompletedHidden' type='hidden' value='0' name='markCompletedHidden'>
                                         <label class="custom-control-label" for="markCompleted">Completed/ Closed</label>
                                     </div>
                                 </div>

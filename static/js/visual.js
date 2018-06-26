@@ -19,7 +19,7 @@ function optionChanged(department){
     var url1= `/history/${department}`;
 
     Plotly.d3.json(url1, function (error, response) {
-        console.log(response);
+        //console.log(response);
         var trace = [{
         type: "bar",
         x: response['status'],
@@ -51,9 +51,9 @@ function optionChanged(department){
             });
 
 
-    var url2 = `/priority/${department}`;
+    var url2 = `/priority_plot/${department}`;
     Plotly.d3.json(url2, function(error, response){
-        console.log(response);
+        //console.log(response);
         //Create pie chart
             var trace = [{
         type: "pie",

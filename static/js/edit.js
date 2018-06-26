@@ -48,6 +48,10 @@ function handleSubmitButtonClick() {
     {
         //No error messages
         $alertDiv.style.display = 'none';
+        
+        if(document.getElementById("markCompleted").checked) {
+            document.getElementById('markCompletedHidden').disabled = true;
+        }
         document.querySelector("#frmPriority").submit();
     }
     
