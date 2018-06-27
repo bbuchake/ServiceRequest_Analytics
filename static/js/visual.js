@@ -61,6 +61,7 @@ function optionChanged(department){
         labels: response['priority'],
         hoverinfo: 'label+percent'
     }];
+        
 
     var PIE = document.getElementById('priority');
     Plotly.newPlot(PIE, trace);

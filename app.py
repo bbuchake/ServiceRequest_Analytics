@@ -79,6 +79,13 @@ session = Session(engine)
 def home():
     return render_template("index.html")
 
+# create route that renders index.html template
+@app.route("/get_total_priority")
+def get_total_priority():
+    #Check whether ticket number exists in the DB
+    existing_ticket = session.query(Priority.ID).filter(Priority.ticket_num==request.form["itemNumber"]).all()
+    return render_template("index.html")
+
 # Query the database and send the jsonified results
 @app.route("/priority/<ticket_no>")
 def get_ticket_no(ticket_no=None):
@@ -119,7 +126,7 @@ def add_priority():
         total_weight = interp(int(request.form["requestorRadios"]) + int(request.form["purposeRadios"]) + int(request.form["hoursRadios"]), [1,19], [1,5])
         
         markCompleted = 0
-        if(request.form["markCompleted"] == 'on'):
+        if(bool(request.form.getlist("markCompleted"))):
             markCompleted = 1
         
         #Build priority data object
@@ -142,26 +149,26 @@ def add_priority():
         #Insert/Update into database
         #Check whether ticket number exists in the DB
         existing_ticket = session.query(Priority.ID).filter(Priority.ticket_num==request.form["itemNumber"]).all()
-#        
-#        if(existing_ticket):
-#            session.query().filter(Priority.ID==existing_ticket).update({"ticket_num":request.form["itemNumber"],
-#                                                                         "req_priority": request.form["requestorRadios"],
-#                                                                         "purpose_priority": request.form["purposeRadios"],
-#                                                                         "hours_priority": request.form["hoursRadios"],
-#                                                                         "assigned_to":request.form["assignedTo"],
-#                                                                         "completed":request.form["markCompleted"],
-#                                                                         "completed_date":datetime.now(),
-#                                                                         "total_priority":total_weight
-#                                                                        })
-#            session.commit()
-#        else:
-#            #Create priority object
-#            priority1 = Priority(ticket_num=request.form["itemNumber"], req_priority=request.form["requestorRadios"], purpose_priority=request.form["purposeRadios"], hours_priority=request.form["hoursRadios"], assigned_to=request.form["assignedTo"], completed=request.form["markCompleted"], completed_date=datetime.now(), total_priority=total_weight)
-#            session.add(priority1)
-#            session.commit()
+        
+        if(existing_ticket):
+            session.query(Priority).filter(Priority.ID==existing_ticket[0][0]).update({"ticket_num":request.form["itemNumber"],
+                                                                         "req_priority": request.form["requestorRadios"],
+                                                                         "purpose_priority": request.form["purposeRadios"],
+                                                                         "hours_priority": request.form["hoursRadios"],
+                                                                         "assigned_to":request.form["assignedTo"],
+                                                                         "completed":markCompleted,
+                                                                         "completed_date":datetime.now(),
+                                                                         "total_priority":total_weight
+                                                                        })
+            session.commit()
+        else:
+            #Create priority object
+            priority1 = Priority(ticket_num=request.form["itemNumber"], req_priority=request.form["requestorRadios"], purpose_priority=request.form["purposeRadios"], hours_priority=request.form["hoursRadios"], assigned_to=request.form["assignedTo"], completed=markCompleted, completed_date=datetime.now(), total_priority=total_weight)
+            session.add(priority1)
+            session.commit()
 #
-#        return render_template("edit.html", priority_data=priority_data)
-        return render_template("error.html", total_weight=markCompleted)
+        return render_template("edit.html", priority_data=priority_data)
+#        return render_template("error.html", total_weight=whereami)
 
 @app.route("/all_tickets")
 def all_tickets():
